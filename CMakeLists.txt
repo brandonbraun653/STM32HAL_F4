@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12.2)
+include("../../../cmake/gcc_stm32.cmake")
 
 # Assign the Thor toolchain file if one isn't passed to the command line
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -15,21 +16,7 @@ if(NOT CMAKE_RELEASE_POSTFIX)
     set(CMAKE_RELEASE_POSTFIX _rel)
 endif()
 
-project(stm32f4_hal)
-
-set(STM32F4_COMPILE_OPTIONS
-    --std=gnu11
-    -fno-common
-    -fmessage-length=0
-    -fno-exceptions
-    -ffunction-sections
-    -fdata-sections
-    -Wall
-    -mcpu=cortex-m4
-    -mthumb
-    -mfloat-abi=hard
-    -mfpu=fpv4-sp-d16
-)
+project(STM32F4_HAL)
 
 set(STM32F4_COMPILE_DEFINITIONS
     -DUSE_FULL_LL_DRIVER
@@ -68,27 +55,28 @@ set(STM32F4_HAL_SRC_FILES
 
 
 
+## TODO: Currently doesn't actually build in VS...need to figure something out
 # Create the output library
-if(CMAKE_GENERATOR STREQUAL "Visual Studio 15 2017 ARM" OR
-   CMAKE_GENERATOR STREQUAL "Visual Studio 15 2017 Win64" OR 
-   CMAKE_GENERATOR STREQUAL "Visual Studio 14 2015 ARM" OR 
-   CMAKE_GENERATOR STREQUAL "Visual Studio 14 2015 Win64"
-  )
-    source_group("Header Files\\CMSIS" FILES ${CMSIS_INC_FILES})
-    source_group("Header Files\\HAL" FILES ${HAL_INC_FILES})
-    source_group("Header Files\\Device" FILES ${DEV_INC_FILES})
+# if(CMAKE_GENERATOR STREQUAL "Visual Studio 15 2017 ARM" OR
+#    CMAKE_GENERATOR STREQUAL "Visual Studio 15 2017 Win64" OR 
+#    CMAKE_GENERATOR STREQUAL "Visual Studio 14 2015 ARM" OR 
+#    CMAKE_GENERATOR STREQUAL "Visual Studio 14 2015 Win64"
+#   )
+#     source_group("Header Files\\CMSIS" FILES ${CMSIS_INC_FILES})
+#     source_group("Header Files\\HAL" FILES ${HAL_INC_FILES})
+#     source_group("Header Files\\Device" FILES ${DEV_INC_FILES})
     
-    source_group("Source Files\\HAL" FILES ${HAL_SRC_FILES})
-    source_group("Source Files\\Device" FILES ${DEV_SRC_FILES})
+#     source_group("Source Files\\HAL" FILES ${HAL_SRC_FILES})
+#     source_group("Source Files\\Device" FILES ${DEV_SRC_FILES})
 
-    add_library(${PROJECT_NAME} STATIC 
-        ${HAL_SRC_FILES}
-        ${DEV_SRC_FILES} 
-        ${CMSIS_INC_FILES}
-        ${HAL_INC_FILES}
-        ${DEV_INC_FILES}
-    )
-endif()
+#     add_library(${PROJECT_NAME} STATIC 
+#         ${HAL_SRC_FILES}
+#         ${DEV_SRC_FILES} 
+#         ${CMSIS_INC_FILES}
+#         ${HAL_INC_FILES}
+#         ${DEV_INC_FILES}
+#     )
+# endif()
 
 if(CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL "MinGW Makefiles")
     add_library(${PROJECT_NAME} STATIC ${HAL_SRC_FILES} ${DEV_SRC_FILES})
