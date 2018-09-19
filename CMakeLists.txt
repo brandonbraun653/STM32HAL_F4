@@ -1,20 +1,10 @@
 cmake_minimum_required(VERSION 3.12.2)
-include("../../../cmake/gcc_stm32.cmake")
-
-# Assign the Thor toolchain file if one isn't passed to the command line
-if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    set(CMAKE_TOOLCHAIN_FILE "../../../cmake/toolchain.cmake")
+if(${STM32_CMAKE_TOOLS_DIR})
+    include("${STM32_CMAKE_TOOLS_DIR}/gcc_stm32.cmake")
+else()
+    message(FATAL_ERROR "Could not find STM32_CMAKE_TOOLS_DIR")
 endif()
 
-# Assign a dbg tag to delineate debug build outputs
-if(NOT CMAKE_DEBUG_POSTFIX)
-    set(CMAKE_DEBUG_POSTFIX _dbg)
-endif()
-
-# Assign a rel tag to delineate release build outputs
-if(NOT CMAKE_RELEASE_POSTFIX)
-    set(CMAKE_RELEASE_POSTFIX _rel)
-endif()
 
 project(STM32F4_HAL)
 
@@ -33,6 +23,7 @@ set(STM32F4_HAL_INC_DIRS
     "${DEV_ROOT}/conf"
     "${CMSIS_ROOT}/Include" 
     "${CMSIS_ROOT}/Device/ST/${STM32_TARGET_FAMILY_UPPER}xx/Include"
+    CACHE STRING "STM32F4_HAL_INC_DIRS"
 )
 
 # Grab all the files .h/.c
