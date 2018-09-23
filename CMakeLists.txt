@@ -130,9 +130,10 @@ set(HAL_SRC_FILES
     "${HAL_ROOT}/Src/stm32f4xx_ll_utils.c"
 )
 
+string(TOLOWER "${STM32_HAL_DEVICE_DEFINITION}" STM32_HAL_DEVICE_DEFINITION_LOWER)
 set(DEV_SRC_FILES 
     "${DEV_ROOT}/sys/system_stm32f4xx.c"
-    "${DEV_ROOT}/startup/startup_${STM32_HAL_DEVICE_DEFINITION}.c"
+    "${DEV_ROOT}/startup/startup_${STM32_HAL_DEVICE_DEFINITION_LOWER}.c"
 )
 
 # --------------------------------------
