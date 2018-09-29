@@ -1,158 +1,321 @@
 cmake_minimum_required(VERSION 3.12.2)
 
 # --------------------------------------
+# Properties for this file
+# --------------------------------------
+set(HAL_VERSION "1.21.0")
+set(INSTALL_CMAKE_DIR "C:/CMakeModules/stm32hal_f4/${HAL_VERSION}")
+set(PRJ_ROOT "${CMAKE_CURRENT_LIST_DIR}")
+set(STM32_FAMILY "F4")
+
+# --------------------------------------
 # Grab any global properties needed 
 # --------------------------------------
-get_property(STM32_CMAKE_TOOLS GLOBAL PROPERTY STM32_CMAKE_TOOLS_DIR)
-get_property(STM32_DEVICE_FAMILY GLOBAL PROPERTY STM32_DEVICE_FAMILY)
-get_property(STM32_HAL_DEVICE_DEFINITION GLOBAL PROPERTY STM32_HAL_DEVICE_DEFINITION)
-get_property(STM32F4_COMPILER_OPTIONS GLOBAL PROPERTY STM32_COMPILER_OPTIONS)
-
-if(NOT "${STM32_CMAKE_TOOLS}" STREQUAL "")
-    include("${STM32_CMAKE_TOOLS}/gcc_stm32.cmake")
-    include("${STM32_CMAKE_TOOLS}/gcc_stm32f4.cmake")
-    message(STATUS "STM32F4: Found STM32 CMake Tools")
-else()
-    message(FATAL_ERROR "Could not find STM32_CMAKE_TOOLS")
-endif()
-
-set(STM32F4_COMPILER_DEFINITIONS
-    -DUSE_FULL_LL_DRIVER
-    -D${STM32_HAL_DEVICE_DEFINITION}
-)
-set(STM32F4_COMPILER_DEFINITIONS ${STM32F4_COMPILER_DEFINITIONS} $<$<CONFIG:DEBUG>: -DDEBUG_DEFAULT_INTERRUPT_HANDLERS>)
-set(STM32F4_COMPILER_DEFINITIONS ${STM32F4_COMPILER_DEFINITIONS} $<$<CONFIG:RELEASE>: >)
-set_property(GLOBAL PROPERTY STM32_HAL_COMPILER_DEFINITIONS "${STM32F4_COMPILER_DEFINITIONS}")
+include("${PRJ_ROOT}/stm32-cmake/cmake/gcc_stm32.cmake")
+include("${PRJ_ROOT}/stm32-cmake/cmake/gcc_stm32f4.cmake")
+include("${PRJ_ROOT}/stm32-cmake/cmake/toolchain.cmake")
 
 # --------------------------------------
 # Define directories
 # --------------------------------------
-set(CMSIS_ROOT "${CMAKE_CURRENT_LIST_DIR}/CMSIS")
-set(HAL_ROOT "${CMAKE_CURRENT_LIST_DIR}/STM32${STM32_DEVICE_FAMILY}xx_HAL_Driver")
-set(DEV_ROOT "${CMAKE_CURRENT_LIST_DIR}/Device")
-
-set(STM32F4_HAL_INC_DIRS 
-    "${HAL_ROOT}/Inc"
-    "${DEV_ROOT}/conf"
-    "${CMSIS_ROOT}/Include" 
-    "${CMSIS_ROOT}/Device/ST/STM32${STM32_DEVICE_FAMILY}xx/Include"
-)
-set_property(GLOBAL PROPERTY STM32_HAL_INC_DIRS "${STM32F4_HAL_INC_DIRS}")
+set(STM32_INC_DIR "STM32F4xx_HAL_Driver/Inc")
+set(STM32_SRC_DIR "STM32F4xx_HAL_Driver/Src")
+set(STM32_LEGACY_INC_DIR "STM32F4xx_HAL_Driver/Inc/Legacy")
+set(STM32_LEGACY_SRC_DIR "STM32F4xx_HAL_Driver/Src/Legacy")
+set(DEVICE_INC_DIR "Device/conf")
+set(CMSIS_INC_DIR "CMSIS/Include")
+set(CMSIS_DEVICE_INC_DIR "CMSIS/Device/ST/STM32F4xx/Include")
 
 # --------------------------------------
 # Grab all the needed .c files
 # --------------------------------------
 set(HAL_SRC_FILES 
-    "${HAL_ROOT}/Src/stm32f4xx_hal.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_adc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_adc_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_can.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_cec.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_cortex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_crc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_cryp.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_cryp_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dac.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dac_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dcmi.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dcmi_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dfsdm.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dma.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dma2d.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dma_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_dsi.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_eth.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_flash.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_flash_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_flash_ramfunc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_fmpi2c.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_fmpi2c_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_gpio.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_hash.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_hash_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_hcd.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_i2c.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_i2c_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_i2s.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_i2s_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_irda.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_iwdg.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_lptim.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_ltdc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_ltdc_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_mmc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_nand.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_nor.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_pccard.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_pcd.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_pcd_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_pwr.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_pwr_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_qspi.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_rcc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_rcc_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_rng.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_rtc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_rtc_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_sai.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_sai_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_sd.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_sdram.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_smartcard.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_spdifrx.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_spi.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_sram.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_tim.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_tim_ex.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_uart.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_usart.c"
-    "${HAL_ROOT}/Src/stm32f4xx_hal_wwdg.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_adc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_crc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_dac.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_dma.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_dma2d.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_exti.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_fmc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_fsmc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_gpio.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_i2c.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_lptim.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_pwr.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_rcc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_rng.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_rtc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_sdmmc.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_spi.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_tim.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_usart.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_usb.c"
-    "${HAL_ROOT}/Src/stm32f4xx_ll_utils.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_adc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_adc_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_can.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_cec.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_cortex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_crc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_cryp.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_cryp_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dac.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dac_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dcmi.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dcmi_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dfsdm.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dma.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dma2d.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dma_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_dsi.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_eth.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_flash.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_flash_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_flash_ramfunc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_fmpi2c.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_fmpi2c_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_gpio.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_hash.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_hash_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_hcd.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_i2c.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_i2c_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_i2s.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_i2s_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_irda.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_iwdg.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_lptim.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_ltdc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_ltdc_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_mmc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_nand.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_nor.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_pccard.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_pcd.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_pcd_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_pwr.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_pwr_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_qspi.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_rcc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_rcc_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_rng.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_rtc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_rtc_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_sai.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_sai_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_sd.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_sdram.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_smartcard.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_spdifrx.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_spi.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_sram.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_tim.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_tim_ex.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_uart.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_usart.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal_wwdg.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_adc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_crc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_dac.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_dma.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_dma2d.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_exti.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_fmc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_fsmc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_gpio.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_i2c.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_lptim.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_pwr.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_rcc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_rng.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_rtc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_sdmmc.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_spi.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_tim.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_usart.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_usb.c"
+    "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_utils.c"
 )
 
-string(TOLOWER "${STM32_HAL_DEVICE_DEFINITION}" STM32_HAL_DEVICE_DEFINITION_LOWER)
-set(DEV_SRC_FILES 
-    "${DEV_ROOT}/sys/system_stm32f4xx.c"
-    "${DEV_ROOT}/startup/startup_${STM32_HAL_DEVICE_DEFINITION_LOWER}.c"
+## These are found inside of "gcc_stm32f4.cmake" since they depend on the chip name, but are
+## listed here for the sake of clarity.
+# set(DEV_SRC_FILES 
+#     "${PRJ_ROOT}/Device/sys/system_stm32f4xx.c"
+#     "${PRJ_ROOT}/Device/startup/startup_stm32f${PROJECT_CHIP_TYPE}.c"
+# )
+
+set(STM32F4_HAL_SRC_FILES ${HAL_SRC_FILES})
+
+# --------------------------------------
+# Grab all the needed .h files
+# --------------------------------------
+set(HAL_INC_FILES
+    "${STM32_INC_DIR}/stm32f4xx_hal.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_adc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_adc_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_can.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_cec.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_cortex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_crc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_cryp.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_cryp_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dac.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dac_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dcmi.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dcmi_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_def.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dfsdm.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dma.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dma2d.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dma_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_dsi.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_eth.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_flash.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_flash_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_flash_ramfunc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_fmpi2c.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_fmpi2c_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_gpio.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_gpio_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_hash.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_hash_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_hcd.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_i2c.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_i2c_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_i2s.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_i2s_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_irda.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_iwdg.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_lptim.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_ltdc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_ltdc_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_mmc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_nand.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_nor.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_pccard.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_pcd.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_pcd_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_pwr.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_pwr_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_qspi.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_rcc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_rcc_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_rng.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_rtc.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_rtc_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_sai.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_sai_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_sd.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_sdram.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_smartcard.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_spdifrx.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_spi.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_sram.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_tim.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_tim_ex.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_uart.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_usart.h"
+    "${STM32_INC_DIR}/stm32f4xx_hal_wwdg.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_adc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_bus.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_cortex.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_crc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_dac.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_dma.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_dma2d.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_exti.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_fmc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_fsmc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_gpio.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_i2c.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_iwdg.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_lptim.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_pwr.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_rcc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_rng.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_rtc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_sdmmc.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_spi.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_system.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_tim.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_usart.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_usb.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_utils.h"
+    "${STM32_INC_DIR}/stm32f4xx_ll_wwdg.h"
+)
+
+set(HAL_LEGACY_INC_FILES
+    "${STM32_LEGACY_INC_DIR}/stm32_hal_legacy.h"
+    "${STM32_LEGACY_INC_DIR}/stm32f4xx_hal_can_legacy.h"
+)
+
+set(DEV_INC_FILES
+    "${DEVICE_INC_DIR}/stm32f4xx_hal_conf.h"
+)
+
+set(CMSIS_INC_FILES
+    "${CMSIS_INC_DIR}/arm_common_tables.h"
+    "${CMSIS_INC_DIR}/arm_const_structs.h"
+    "${CMSIS_INC_DIR}/arm_math.h"
+    "${CMSIS_INC_DIR}/cmsis_armcc.h"
+    "${CMSIS_INC_DIR}/cmsis_armcc_V6.h"
+    "${CMSIS_INC_DIR}/cmsis_gcc.h"
+    "${CMSIS_INC_DIR}/core_cm0.h"
+    "${CMSIS_INC_DIR}/core_cm0plus.h"
+    "${CMSIS_INC_DIR}/core_cm3.h"
+    "${CMSIS_INC_DIR}/core_cm4.h"
+    "${CMSIS_INC_DIR}/core_cm7.h"
+    "${CMSIS_INC_DIR}/core_cmFunc.h"
+    "${CMSIS_INC_DIR}/core_cmInstr.h"
+    "${CMSIS_INC_DIR}/core_cmSimd.h"
+    "${CMSIS_INC_DIR}/core_sc000.h"
+    "${CMSIS_INC_DIR}/core_sc300.h"
+)
+
+set(CMSIS_DEVICE_INC_FILES
+    "${CMSIS_DEVICE_INC_DIR}/stm32f401xc.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f401xe.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f405xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f407xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f410cx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f410rx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f410tx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f411xe.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f412cx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f412rx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f412vx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f412zx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f413xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f415xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f417xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f423xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f427xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f429xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f437xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f439xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f446xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f469xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f479xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/stm32f4xx.h"
+    "${CMSIS_DEVICE_INC_DIR}/system_stm32f4xx.h"
+)
+
+# --------------------------------------
+# Set the include directories for both install and build
+# --------------------------------------
+set(STM32F4_HAL_BUILD_INC_DIRS 
+    "${PRJ_ROOT}/${STM32_INC_DIR}"
+    "${PRJ_ROOT}/${STM32_LEGACY_INC_DIR}"
+    "${PRJ_ROOT}/${DEVICE_INC_DIR}"
+    "${PRJ_ROOT}/${CMSIS_INC_DIR}" 
+    "${PRJ_ROOT}/${CMSIS_DEVICE_INC_DIR}"
+)
+
+set(STM32F4_HAL_INSTALL_INC_DIRS
+    "${INSTALL_CMAKE_DIR}/${STM32_INC_DIR}"
+    "${INSTALL_CMAKE_DIR}/${STM32_LEGACY_INC_DIR}"
+    "${INSTALL_CMAKE_DIR}/${DEVICE_INC_DIR}"
+    "${INSTALL_CMAKE_DIR}/${CMSIS_INC_DIR}" 
+    "${INSTALL_CMAKE_DIR}/${CMSIS_DEVICE_INC_DIR}"
 )
 
 # --------------------------------------
 # Define the project
 # --------------------------------------
-project(STM32F4_HAL)
+project(STM32F4_HAL LANGUAGES C)
+STM32F4_GENERATE_ALL_TARGETS(
+    "${PRJ_ROOT}"
+    "${STM32F4_HAL_SRC_FILES}" 
+    "${STM32F4_HAL_BUILD_INC_DIRS}" 
+    "${STM32F4_HAL_INSTALL_INC_DIRS}"
+)
 
-if(CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL "MinGW Makefiles")
-    add_library(${PROJECT_NAME} STATIC ${HAL_SRC_FILES} ${DEV_SRC_FILES})
-endif()
-
-# Add the include directories, making sure other projects can see them
-target_include_directories(${PROJECT_NAME} PUBLIC ${STM32F4_HAL_INC_DIRS})
-
-# Add target/build specific compiler options
-target_compile_options(${PROJECT_NAME} PRIVATE ${STM32F4_COMPILER_OPTIONS} --std=gnu11)
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-ggdb -Og>)
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:-O3>)
-
-# Add target/build specific definitions, making sure other projects can see them
-target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>: ${STM32F4_COMPILER_DEFINITIONS} -DDEBUG=1>)
-target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>: ${STM32F4_COMPILER_DEFINITIONS} -DNDEBUG=1 -DRELEASE=1>)
+# --------------------------------------
+# Export the project for use with find_package
+# --------------------------------------
+# Install the header files
+install(FILES ${HAL_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${STM32_INC_DIR})
+install(FILES ${HAL_LEGACY_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${STM32_LEGACY_INC_DIR})
+install(FILES ${DEV_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${DEVICE_INC_DIR})
+install(FILES ${CMSIS_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${CMSIS_INC_DIR})
+install(FILES ${CMSIS_DEVICE_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${CMSIS_DEVICE_INC_DIR})
