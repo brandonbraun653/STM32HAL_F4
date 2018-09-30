@@ -3,20 +3,30 @@ cmake_minimum_required(VERSION 3.12.2)
 # --------------------------------------
 # Properties for this file
 # --------------------------------------
-set(HAL_VERSION "1.21.0")
-set(INSTALL_CMAKE_DIR "C:/CMakeModules/stm32hal_f4/${HAL_VERSION}")
-set(PRJ_ROOT "${CMAKE_CURRENT_LIST_DIR}")
 set(STM32_FAMILY "F4")
+set(HAL_VERSION "1.21.0")
+set(PRJ_ROOT "${CMAKE_CURRENT_LIST_DIR}")
+
+if(NOT INSTALL_CMAKE_DIR)
+    if(WIN32)
+        set(INSTALL_CMAKE_DIR "C:/CMakeModules/stm32hal_f4/${HAL_VERSION}")
+    elseif(UNIX)
+        set(INSTALL_CMAKE_DIR "/home/$ENV{USER}/CMakeModules/stm32hal_f4/${HAL_VERSION}")
+    else()
+        message(WARNING "No install directory is set! You will be able to build locally but not install.")
+    endif()
+endif()
 
 # --------------------------------------
-# Grab any global properties needed 
+# Pull the STM32 toolchain and some needed functions
 # --------------------------------------
 include("${PRJ_ROOT}/stm32-cmake/cmake/gcc_stm32.cmake")
 include("${PRJ_ROOT}/stm32-cmake/cmake/gcc_stm32f4.cmake")
 include("${PRJ_ROOT}/stm32-cmake/cmake/toolchain.cmake")
 
 # --------------------------------------
-# Define directories
+# Define directories. These are relative on purpose so that the install command
+# can prepend the INSTALL_PREFIX to it. 
 # --------------------------------------
 set(STM32_INC_DIR "STM32F4xx_HAL_Driver/Inc")
 set(STM32_SRC_DIR "STM32F4xx_HAL_Driver/Src")
@@ -27,7 +37,8 @@ set(CMSIS_INC_DIR "CMSIS/Include")
 set(CMSIS_DEVICE_INC_DIR "CMSIS/Device/ST/STM32F4xx/Include")
 
 # --------------------------------------
-# Grab all the needed .c files
+# Grab all the needed .c files. These are used for the compiler to build 
+# all the supported static libraries.
 # --------------------------------------
 set(HAL_SRC_FILES 
     "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_hal.c"
@@ -117,17 +128,20 @@ set(HAL_SRC_FILES
     "${PRJ_ROOT}/${STM32_SRC_DIR}/stm32f4xx_ll_utils.c"
 )
 
-## These are found inside of "gcc_stm32f4.cmake" since they depend on the chip name, but are
-## listed here for the sake of clarity.
+# --------------------------------------
+# These .c files are found inside of "gcc_stm32f4.cmake" since they depend 
+# on the chip name, but are listed here for the sake of clarity.
+# --------------------------------------
 # set(DEV_SRC_FILES 
 #     "${PRJ_ROOT}/Device/sys/system_stm32f4xx.c"
 #     "${PRJ_ROOT}/Device/startup/startup_stm32f${PROJECT_CHIP_TYPE}.c"
 # )
 
-set(STM32F4_HAL_SRC_FILES ${HAL_SRC_FILES})
+set(STM32_HAL_SRC_FILES ${HAL_SRC_FILES}) # ${DEV_SRC_FILES}
 
 # --------------------------------------
-# Grab all the needed .h files
+# Grab all the needed .h files. This is for the purpose of installing all the 
+# targets into the INSTALL_CMAKE_DIR and need to be relative paths.
 # --------------------------------------
 set(HAL_INC_FILES
     "${STM32_INC_DIR}/stm32f4xx_hal.h"
@@ -283,7 +297,8 @@ set(CMSIS_DEVICE_INC_FILES
 # --------------------------------------
 # Set the include directories for both install and build
 # --------------------------------------
-set(STM32F4_HAL_BUILD_INC_DIRS 
+# This is for local builds
+set(STM32_HAL_BUILD_INC_DIRS 
     "${PRJ_ROOT}/${STM32_INC_DIR}"
     "${PRJ_ROOT}/${STM32_LEGACY_INC_DIR}"
     "${PRJ_ROOT}/${DEVICE_INC_DIR}"
@@ -291,7 +306,8 @@ set(STM32F4_HAL_BUILD_INC_DIRS
     "${PRJ_ROOT}/${CMSIS_DEVICE_INC_DIR}"
 )
 
-set(STM32F4_HAL_INSTALL_INC_DIRS
+# These are for the install command
+set(STM32_HAL_INSTALL_INC_DIRS
     "${INSTALL_CMAKE_DIR}/${STM32_INC_DIR}"
     "${INSTALL_CMAKE_DIR}/${STM32_LEGACY_INC_DIR}"
     "${INSTALL_CMAKE_DIR}/${DEVICE_INC_DIR}"
@@ -303,17 +319,18 @@ set(STM32F4_HAL_INSTALL_INC_DIRS
 # Define the project
 # --------------------------------------
 project(STM32F4_HAL LANGUAGES C)
+
+# Generates targets/libraries for every supported chip and sets up the export installation definitions.
+# Additionally, generates two targets that build all debug/release static libraries locally. This
+# is useful for integration systems like Jenkins.
 STM32F4_GENERATE_ALL_TARGETS(
     "${PRJ_ROOT}"
-    "${STM32F4_HAL_SRC_FILES}" 
-    "${STM32F4_HAL_BUILD_INC_DIRS}" 
-    "${STM32F4_HAL_INSTALL_INC_DIRS}"
+    "${STM32_HAL_SRC_FILES}" 
+    "${STM32_HAL_BUILD_INC_DIRS}" 
+    "${STM32_HAL_INSTALL_INC_DIRS}"
 )
 
-# --------------------------------------
-# Export the project for use with find_package
-# --------------------------------------
-# Install the header files
+# Install the header files for use with find_package()
 install(FILES ${HAL_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${STM32_INC_DIR})
 install(FILES ${HAL_LEGACY_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${STM32_LEGACY_INC_DIR})
 install(FILES ${DEV_INC_FILES} DESTINATION ${INSTALL_CMAKE_DIR}/${DEVICE_INC_DIR})
