@@ -114,7 +114,7 @@ typedef struct
 
 /** @defgroup RCC_LL_EC_OSC_VALUES Oscillator Values adaptation
   * @brief    Defines used to adapt values of different oscillators
-  * @note     These values could be modified in the user environment according to 
+  * @note     These values could be modified in the user environment according to
   *           HW set-up.
   * @{
   */
@@ -4889,7 +4889,7 @@ __STATIC_INLINE uint32_t LL_RCC_PLL_GetN(void)
 }
 
 /**
-  * @brief  Get Main PLL division factor for PLLP 
+  * @brief  Get Main PLL division factor for PLLP
   * @rmtoll PLLCFGR      PLLP       LL_RCC_PLL_GetP
   * @retval Returned value can be one of the following values:
   *         @arg @ref LL_RCC_PLLP_DIV_2
@@ -5354,7 +5354,7 @@ __STATIC_INLINE uint32_t LL_RCC_PLLI2S_IsReady(void)
   */
 __STATIC_INLINE void LL_RCC_PLLI2S_ConfigDomain_SAI(uint32_t Source, uint32_t PLLM, uint32_t PLLN, uint32_t PLLQ_R, uint32_t PLLDIVQ_R)
 {
-  register uint32_t *pReg = (uint32_t *)((uint32_t)((uint32_t)(&RCC->PLLCFGR) + (Source & 0x80U)));
+  uint32_t *pReg = (uint32_t *)((uint32_t)((uint32_t)(&RCC->PLLCFGR) + (Source & 0x80U)));
   MODIFY_REG(*pReg, RCC_PLLCFGR_PLLSRC, (Source & (~0x80U)));
 #if defined(RCC_PLLI2SCFGR_PLLI2SM)
   MODIFY_REG(RCC->PLLI2SCFGR, RCC_PLLI2SCFGR_PLLI2SM, PLLM);
@@ -5678,7 +5678,7 @@ __STATIC_INLINE void LL_RCC_PLLI2S_ConfigDomain_SPDIFRX(uint32_t Source, uint32_
   */
 __STATIC_INLINE void LL_RCC_PLLI2S_ConfigDomain_I2S(uint32_t Source, uint32_t PLLM, uint32_t PLLN, uint32_t PLLR)
 {
-  register uint32_t *pReg = (uint32_t *)((uint32_t)((uint32_t)(&RCC->PLLCFGR) + (Source & 0x80U)));
+  uint32_t *pReg = (uint32_t *)((uint32_t)((uint32_t)(&RCC->PLLCFGR) + (Source & 0x80U)));
   MODIFY_REG(*pReg, RCC_PLLCFGR_PLLSRC, (Source & (~0x80U)));
 #if defined(RCC_PLLI2SCFGR_PLLI2SM)
   MODIFY_REG(RCC->PLLI2SCFGR, RCC_PLLI2SCFGR_PLLI2SM, PLLM);
