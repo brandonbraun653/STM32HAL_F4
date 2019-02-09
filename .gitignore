@@ -1,3 +1,2 @@
 **.html
-**.obj
-**build/
+bin/*
