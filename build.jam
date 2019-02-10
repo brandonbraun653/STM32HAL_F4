@@ -134,7 +134,7 @@ project STM32F4_HAL_DRIVER : usage-requirements <include>$(f4_include_dirs) ;
 # ------------------------------------------
 # STM32F4_HAL Low Level Driver Lib Targets
 # ------------------------------------------
-lib LL_DRIVER : : : <link>static ;
+lib LL_DRIVER : invld_stm32f4_ll_cfg.c : : <link>static ;
 
 lib LL_DRIVER 
     :   $(f4_ll_src)
@@ -169,7 +169,7 @@ explicit LL_DRIVER ;
 # ------------------------------------------
 # STM32F4_HAL Driver Lib Targets
 # ------------------------------------------
-lib HAL_DRIVER : : : <link>static ;
+lib HAL_DRIVER : invld_stm32f4_hal_cfg.c  : : <link>static ;
 
 lib HAL_DRIVER 
     :   $(f4_hal_src)  
