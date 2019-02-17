@@ -60,6 +60,8 @@ local generic_f4_requirements_link_flags =
 local generic_f4_usage_requirements_link_flags = 
     -mfloat-abi=hard 
     -mcpu=cortex-m4
+    -specs=nano.specs 
+    -specs=nosys.specs
     ;
 
 local all_generic_f4_link_flags = 
@@ -90,8 +92,8 @@ local f4_include_dirs =
 # Source Files
 # ------------------------------------------
 local f4_common_src = $(f4_dev_system_src_dir)/system_stm32f4xx.c ;
-local f4_ll_src = [ glob $(f4_hal_driver_src_dir)/stm32f4xx_ll_*.c ] ;
-local f4_hal_src = [ glob $(f4_hal_driver_src_dir)/stm32f4xx_hal_*.c ] ;
+local f4_ll_src = [ glob $(f4_hal_driver_src_dir)/stm32f4xx_ll*.c ] ;
+local f4_hal_src = [ glob $(f4_hal_driver_src_dir)/stm32f4xx_hal*.c ] ;
 
 # ------------------------------------------
 # Device Specific Libs: 
@@ -110,7 +112,7 @@ alias F4_TARGET_MCU :
     :   <define>STM32F446xx
         <linkflags>-mfpu=fpv4-sp-d16
         <linkflags>$(generic_f4_usage_requirements_link_flags)
-        <linkflags>$(linker_dir)/STM32F446RE_flash.lds
+        <linkflags>-T$(linker_dir)/STM32F446RE_flash.lds
         <cflags>$(generic_f4_usage_requirements_cflags)
         <cflags>-mfpu=fpv4-sp-d16 
         <cxxflags>$(generic_f4_usage_requirements_cflags)
@@ -148,6 +150,7 @@ lib LL_DRIVER
         <link>static
         <include>$(f4_include_dirs)
         <define>$(f4_dbg_defs)
+        <define>USE_FULL_LL_DRIVER
         <cflags>$(f4_dbg_cflags)
         <cflags>$(all_generic_f4_cflags)
         <use>F4_TARGET_MCU
@@ -165,6 +168,7 @@ lib LL_DRIVER
         <link>static
         <include>$(f4_include_dirs)
         <define>$(f4_rel_defs)
+        <define>USE_FULL_LL_DRIVER
         <cflags>$(f4_rel_cflags)
         <cflags>$(all_generic_f4_cflags)
         <use>F4_TARGET_MCU
