@@ -13,7 +13,7 @@ local f4_dbg_cflags = -ggdb -Og ;
 local f4_rel_defs = NDEBUG ;
 local f4_rel_cflags = -O3 ;
 
-local linker_dir = Device/ld ;
+local linker_dir = $(STM32F4_ROOT)/Device/ld ;
 
 # ------------------------------------------
 # Generic STM32F4 Family CFlags
