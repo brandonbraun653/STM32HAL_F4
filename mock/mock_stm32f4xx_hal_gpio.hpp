@@ -1,0 +1,69 @@
+/********************************************************************************
+ *  File Name:
+ *    mock_stm32f4xx_hal_gpio.hpp
+ *
+ *  Description:
+ *    Mocks the STM32 HAL with GMock
+ *
+ *  2019 | Brandon Braun | brandonbraun653@gmail.com
+ ********************************************************************************/
+
+#pragma once
+#ifndef MOCK_STM32F4xx_HAL_GPIO_HPP
+#define MOCK_STM32F4xx_HAL_GPIO_HPP
+
+/* C++ Includes */
+#include <cstdint>
+#include <cstdlib>
+
+/* Mock Includes */
+#if defined( GMOCK_TEST )
+#include <gmock/gmock.h>
+
+/* STM32 Includes */
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "stm32f4xx_hal_gpio.h"
+
+#ifdef __cplusplus
+}
+#endif
+
+class STM32F4_HAL_GPIO_Interface
+{
+public:
+  virtual ~STM32F4_HAL_GPIO_Interface() = default;
+
+  virtual void HAL_GPIO_Init( GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_Init );
+  virtual void HAL_GPIO_DeInit( GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin );
+  virtual GPIO_PinState HAL_GPIO_ReadPin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin );
+  virtual void HAL_GPIO_WritePin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState );
+  virtual void HAL_GPIO_TogglePin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin );
+  virtual HAL_StatusTypeDef HAL_GPIO_LockPin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin );
+  virtual void HAL_GPIO_EXTI_IRQHandler( uint16_t GPIO_Pin );
+  virtual void HAL_GPIO_EXTI_Callback( uint16_t GPIO_Pin );
+};
+
+class STM32F4_HAL_GPIO_Mock : public STM32F4_HAL_GPIO_Interface
+{
+public:
+  virtual ~STM32F4_HAL_GPIO_Mock() = default;
+
+  MOCK_METHOD2( HAL_GPIO_Init, void( GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_Init ));
+  MOCK_METHOD2( HAL_GPIO_DeInit, void( GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin ));
+  MOCK_METHOD2( HAL_GPIO_ReadPin, GPIO_PinState( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
+  MOCK_METHOD3( HAL_GPIO_WritePin, void( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState ));
+  MOCK_METHOD2( HAL_GPIO_TogglePin, void( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
+  MOCK_METHOD2( HAL_GPIO_LockPin, HAL_StatusTypeDef( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
+  MOCK_METHOD1( HAL_GPIO_EXTI_IRQHandler, void( uint16_t GPIO_Pin ));
+  MOCK_METHOD1( HAL_GPIO_EXTI_Callback, void( uint16_t GPIO_Pin ));
+};
+
+extern STM32F4_HAL_GPIO_Mock *STM32F4_HAL_GPIO_MockObj;
+
+#endif /* GMOCK_TEST */
+
+#endif /* !MOCK_STM32F4xx_HAL_GPIO_HPP */
