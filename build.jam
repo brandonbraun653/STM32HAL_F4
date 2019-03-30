@@ -78,12 +78,14 @@ local f4_dev_startup_src_dir = Device/startup ;
 
 local f4_hal_inc_dir = STM32F4xx_HAL_Driver/Inc ;
 local f4_dev_inc_dir = Device/include ;
+local f4_dev_sys_dir = Device/sys ;
 local f4_cfg_inc_dir = Device/conf ;
 local cmsis_inc_dir = ../cmsis/CMSIS/Core/Include ;
 
 local f4_include_dirs = 
     $(f4_hal_inc_dir)
     $(f4_dev_inc_dir)
+    $(f4_dev_sys_dir)
     $(f4_cfg_inc_dir)
     $(cmsis_inc_dir)
     ;
