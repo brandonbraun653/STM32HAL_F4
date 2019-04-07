@@ -112,6 +112,7 @@ alias F4_TARGET_MCU :
     :
     # Expect all these to be propagated to all projects
     :   <define>STM32F446xx
+        <define>CHIMERA_LITTLE_ENDIAN
         <linkflags>-mfpu=fpv4-sp-d16
         <linkflags>$(generic_f4_usage_requirements_link_flags)
         <linkflags>-T$(linker_dir)/STM32F446RE_flash.lds
