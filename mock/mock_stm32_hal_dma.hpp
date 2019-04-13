@@ -1,6 +1,6 @@
 /********************************************************************************
  *  File Name:
- *    mock_stm32f4xx_hal_dma.hpp
+ *    mock_stm32_hal_dma.hpp
  *
  *  Description:
  *    Mocks the STM32 HAL with GMock
@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_DMA_HPP
-#define MOCK_STM32F4xx_HAL_DMA_HPP
+#ifndef mock_stm32_hal_DMA_HPP
+#define mock_stm32_hal_DMA_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -32,10 +32,10 @@ extern "C"
 }
 #endif
 
-class STM32F4_HAL_DMA_Interface
+class STM32_HAL_DMA_Interface
 {
 public:
-  virtual ~STM32F4_HAL_DMA_Interface() = default;
+  virtual ~STM32_HAL_DMA_Interface() = default;
 
   virtual HAL_StatusTypeDef HAL_DMA_Init( DMA_HandleTypeDef *hdma );
   virtual HAL_StatusTypeDef HAL_DMA_DeInit( DMA_HandleTypeDef *hdma );
@@ -52,10 +52,10 @@ public:
   virtual uint32_t HAL_DMA_GetError( DMA_HandleTypeDef *hdma );
 };
 
-class STM32F4_HAL_DMA_Mock : public STM32F4_HAL_DMA_Interface
+class STM32_HAL_DMA_Mock : public STM32_HAL_DMA_Interface
 {
 public:
-  virtual ~STM32F4_HAL_DMA_Mock() = default;
+  virtual ~STM32_HAL_DMA_Mock() = default;
 
   MOCK_METHOD1( HAL_DMA_Init, HAL_StatusTypeDef( DMA_HandleTypeDef *hdma ) );
   MOCK_METHOD1( HAL_DMA_DeInit, HAL_StatusTypeDef( DMA_HandleTypeDef *hdma ) );
@@ -77,8 +77,8 @@ public:
   MOCK_METHOD1( HAL_DMA_GetError, uint32_t( DMA_HandleTypeDef *hdma ) );
 };
 
-extern STM32F4_HAL_DMA_Mock *STM32F4_HAL_DMA_MockObj;
+extern STM32_HAL_DMA_Mock *STM32_HAL_DMA_MockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32F4xx_HAL_DMA_HPP */
+#endif /* !mock_stm32_hal_DMA_HPP */

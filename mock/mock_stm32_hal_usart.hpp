@@ -1,6 +1,6 @@
 /********************************************************************************
  *  File Name:
- *    mock_stm32f4xx_hal_usart.hpp
+ *    mock_stm32_hal_usart.hpp
  *
  *  Description:
  *    Mocks the STM32 HAL with GMock
@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_USART_HPP
-#define MOCK_STM32F4xx_HAL_USART_HPP
+#ifndef mock_stm32_hal_USART_HPP
+#define mock_stm32_hal_USART_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -33,10 +33,10 @@ extern "C"
 }
 #endif
 
-class STM32F4_HAL_USART_Interface
+class STM32_HAL_USART_Interface
 {
 public:
-  virtual ~STM32F4_HAL_USART_Interface() = default;
+  virtual ~STM32_HAL_USART_Interface() = default;
 
   virtual HAL_StatusTypeDef HAL_USART_Init( USART_HandleTypeDef *huart );
   virtual HAL_StatusTypeDef HAL_HalfDuplex_Init( USART_HandleTypeDef *huart );
@@ -78,10 +78,10 @@ public:
   virtual uint32_t HAL_USART_GetError( USART_HandleTypeDef *huart );
 };
 
-class STM32F4_HAL_USART_Mock : public STM32F4_HAL_USART_Interface
+class STM32_HAL_USART_Mock : public STM32_HAL_USART_Interface
 {
 public:
-  virtual ~STM32F4_HAL_USART_Mock() = default;
+  virtual ~STM32_HAL_USART_Mock() = default;
 
   MOCK_METHOD1( HAL_USART_Init, HAL_StatusTypeDef( USART_HandleTypeDef *huart ) );
   MOCK_METHOD1( HAL_HalfDuplex_Init, HAL_StatusTypeDef( USART_HandleTypeDef *huart ) );
@@ -126,8 +126,8 @@ public:
   MOCK_METHOD1( HAL_USART_GetError, uint32_t( USART_HandleTypeDef *huart ) );
 };
 
-extern STM32F4_HAL_USART_Mock *STM32F4_HAL_USARTMockObj;
+extern STM32_HAL_USART_Mock *STM32_HAL_USARTMockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32F4xx_HAL_UART_HPP */
+#endif /* !mock_stm32_hal_UART_HPP */

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_CONF_H
-#define MOCK_STM32F4XX_HAL_CONF_H
+#ifndef mock_stm32_hal_CONF_H
+#define mock_stm32_hal_CONF_H
 
 /**
  ******************************************************************************
@@ -467,4 +467,4 @@ extern "C"
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 
 
-#endif /* !MOCK_STM32F4xx_HAL_CONF_H */
+#endif /* !mock_stm32_hal_CONF_H */

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_DEF_H
-#define MOCK_STM32F4XX_HAL_DEF_H
+#ifndef mock_stm32_hal_DEF_H
+#define mock_stm32_hal_DEF_H
 
 
 #ifdef __cplusplus
@@ -41,4 +41,4 @@ extern "C"
 #endif
 
 
-#endif /* !MOCK_STM32F4XX_HAL_DEF_H */
+#endif /* !mock_stm32_hal_DEF_H */

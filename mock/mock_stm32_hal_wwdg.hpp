@@ -1,6 +1,6 @@
 /********************************************************************************
  *  File Name:
- *    mock_stm32f4xx_hal_wwdg.hpp
+ *    mock_stm32_hal_wwdg.hpp
  *
  *  Description:
  *    Mocks the STM32 HAL with GMock
@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_WWDG_HPP
-#define MOCK_STM32F4xx_HAL_WWDG_HPP
+#ifndef mock_stm32_hal_WWDG_HPP
+#define mock_stm32_hal_WWDG_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -32,10 +32,10 @@ extern "C"
 }
 #endif
 
-class STM32F4_HAL_WWDG_Interface
+class STM32_HAL_WWDG_Interface
 {
 public:
-  virtual ~STM32F4_HAL_WWDG_Interface() = default;
+  virtual ~STM32_HAL_WWDG_Interface() = default;
 
   virtual HAL_StatusTypeDef HAL_WWDG_Init( WWDG_HandleTypeDef *hwwdg );
   virtual void HAL_WWDG_MspInit( WWDG_HandleTypeDef *hwwdg );
@@ -44,10 +44,10 @@ public:
   virtual void HAL_WWDG_EarlyWakeupCallback( WWDG_HandleTypeDef *hwwdg );
 };
 
-class STM32F4_HAL_WWDG_Mock : public STM32F4_HAL_WWDG_Interface
+class STM32_HAL_WWDG_Mock : public STM32_HAL_WWDG_Interface
 {
 public:
-  virtual ~STM32F4_HAL_WWDG_Mock() = default;
+  virtual ~STM32_HAL_WWDG_Mock() = default;
 
   MOCK_METHOD1( HAL_WWDG_Init, HAL_StatusTypeDef( WWDG_HandleTypeDef *hwwdg ) );
   MOCK_METHOD1( HAL_WWDG_MspInit, void( WWDG_HandleTypeDef *hwwdg ) );
@@ -56,8 +56,8 @@ public:
   MOCK_METHOD1( HAL_WWDG_EarlyWakeupCallback, void( WWDG_HandleTypeDef *hwwdg ) );
 };
 
-extern STM32F4_HAL_WWDG_Mock *STM32F4_HAL_IWDG_MockObj;
+extern STM32_HAL_WWDG_Mock *STM32_HAL_IWDG_MockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32F4xx_HAL_WWDG_HPP */
+#endif /* !mock_stm32_hal_WWDG_HPP */

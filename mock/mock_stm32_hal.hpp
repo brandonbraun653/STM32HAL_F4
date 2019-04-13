@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_HPP
-#define MOCK_STM32F4xx_HAL_HPP
+#ifndef mock_stm32_hal_HPP
+#define mock_stm32_hal_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -32,10 +32,10 @@ extern "C"
 }
 #endif
 
-class STM32F4_HAL_Interface
+class STM32_HAL_Interface
 {
 public:
-  virtual ~STM32F4_HAL_Interface() = default;
+  virtual ~STM32_HAL_Interface() = default;
 
   virtual HAL_StatusTypeDef HAL_Init( void );
   virtual HAL_StatusTypeDef HAL_DeInit( void );
@@ -66,10 +66,10 @@ public:
   virtual void HAL_DisableMemorySwappingBank( void );
 };
 
-class STM32F4_HAL_Mock : public STM32F4_HAL_Interface
+class STM32_HAL_Mock : public STM32_HAL_Interface
 {
 public:
-  virtual ~STM32F4_HAL_Mock() = default;
+  virtual ~STM32_HAL_Mock() = default;
 
   MOCK_METHOD0( HAL_Init, HAL_StatusTypeDef( void ) );
   MOCK_METHOD0( HAL_DeInit, HAL_StatusTypeDef( void ) );
@@ -100,8 +100,8 @@ public:
   MOCK_METHOD0( HAL_DisableMemorySwappingBank, void( void ) );
 };
 
-extern STM32F4_HAL_Mock *STM32F4_HAL_MockObj;
+extern STM32_HAL_Mock *STM32_HAL_MockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32F4xx_HAL_HPP */
+#endif /* !mock_stm32_hal_HPP */

@@ -1,6 +1,6 @@
 /********************************************************************************
  *  File Name:
- *    mock_stm32f4xx_hal_rcc.hpp
+ *    mock_stm32_hal_rcc.hpp
  *
  *  Description:
  *    Mocks the STM32 HAL with GMock
@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_RCC_HPP
-#define MOCK_STM32F4xx_HAL_RCC_HPP
+#ifndef mock_stm32_hal_RCC_HPP
+#define mock_stm32_hal_RCC_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -32,10 +32,10 @@ extern "C"
 }
 #endif
 
-class STM32F4_HAL_RCC_Interface
+class STM32_HAL_RCC_Interface
 {
 public:
-  virtual ~STM32F4_HAL_RCC_Interface() = default;
+  virtual ~STM32_HAL_RCC_Interface() = default;
 
   virtual HAL_StatusTypeDef HAL_RCC_DeInit( void );
   virtual HAL_StatusTypeDef HAL_RCC_OscConfig( RCC_OscInitTypeDef *RCC_OscInitStruct );
@@ -53,10 +53,10 @@ public:
   virtual void HAL_RCC_CSSCallback( void );
 };
 
-class STM32F4_HAL_RCC_Mock : public STM32F4_HAL_RCC_Interface
+class STM32_HAL_RCC_Mock : public STM32_HAL_RCC_Interface
 {
 public:
-  virtual ~STM32F4_HAL_RCC_Mock() = default;
+  virtual ~STM32_HAL_RCC_Mock() = default;
 
   MOCK_METHOD0(HAL_RCC_DeInit, HAL_StatusTypeDef( void ));
   MOCK_METHOD1(HAL_RCC_OscConfig, HAL_StatusTypeDef( RCC_OscInitTypeDef *RCC_OscInitStruct ));
@@ -74,8 +74,8 @@ public:
   MOCK_METHOD0(HAL_RCC_CSSCallback, void( void ));
 };
 
-extern STM32F4_HAL_RCC_Mock *STM32F4_HAL_RCC_MockObj;
+extern STM32_HAL_RCC_Mock *STM32_HAL_RCC_MockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32F4xx_HAL_RCC_HPP */
+#endif /* !mock_stm32_hal_RCC_HPP */

@@ -1,6 +1,6 @@
 /********************************************************************************
  *  File Name:
- *    mock_stm32f4xx_hal_cortex.hpp
+ *    mock_stm32_hal_cortex.hpp
  *
  *  Description:
  *    Mocks the STM32 HAL with GMock
@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef MOCK_STM32F4xx_HAL_CORTEX_HPP
-#define MOCK_STM32F4xx_HAL_CORTEX_HPP
+#ifndef mock_stm32_hal_CORTEX_HPP
+#define mock_stm32_hal_CORTEX_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -32,10 +32,10 @@ extern "C"
 }
 #endif
 
-class STM32F4_HAL_CORTEX_Interface
+class STM32_HAL_CORTEX_Interface
 {
 public:
-  virtual ~STM32F4_HAL_CORTEX_Interface() = default;
+  virtual ~STM32_HAL_CORTEX_Interface() = default;
 
   virtual void HAL_NVIC_SetPriorityGrouping( uint32_t PriorityGroup );
   virtual void HAL_NVIC_SetPriority( IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority );
@@ -57,10 +57,10 @@ public:
   virtual void HAL_MPU_ConfigRegion( MPU_Region_InitTypeDef *MPU_Init );
 };
 
-class STM32F4_HAL_CORTEX_Mock : public STM32F4_HAL_CORTEX_Interface
+class STM32_HAL_CORTEX_Mock : public STM32_HAL_CORTEX_Interface
 {
 public:
-  virtual ~STM32F4_HAL_CORTEX_Mock() = default;
+  virtual ~STM32_HAL_CORTEX_Mock() = default;
 
   MOCK_METHOD1( HAL_NVIC_SetPriorityGrouping, void( uint32_t PriorityGroup ) );
   MOCK_METHOD3( HAL_NVIC_SetPriority, void( IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority ) );
@@ -83,8 +83,8 @@ public:
   MOCK_METHOD1( HAL_MPU_ConfigRegion, void( MPU_Region_InitTypeDef *MPU_Init ) );
 };
 
-extern STM32F4_HAL_CORTEX_Mock *STM32F4_HAL_CORTEX_MockObj;
+extern STM32_HAL_CORTEX_Mock *STM32_HAL_CORTEX_MockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32F4xx_HAL_CORTEX_HPP */
+#endif /* !mock_stm32_hal_CORTEX_HPP */
