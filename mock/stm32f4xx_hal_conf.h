@@ -1,6 +1,6 @@
 #pragma once
-#ifndef mock_stm32_hal_CONF_H
-#define mock_stm32_hal_CONF_H
+#ifndef MOCK_STM32_HAL_CONF_H
+#define MOCK_STM32_HAL_CONF_H
 
 /**
  ******************************************************************************

@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef mock_stm32_hal_USART_HPP
-#define mock_stm32_hal_USART_HPP
+#ifndef MOCK_STM32_HAL_USART_HPP
+#define MOCK_STM32_HAL_USART_HPP
 
 /* C++ Includes */
 #include <cstdint>
@@ -38,44 +38,44 @@ class STM32_HAL_USART_Interface
 public:
   virtual ~STM32_HAL_USART_Interface() = default;
 
-  virtual HAL_StatusTypeDef HAL_USART_Init( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_HalfDuplex_Init( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_LIN_Init( USART_HandleTypeDef *huart, uint32_t BreakDetectLength );
-  virtual HAL_StatusTypeDef HAL_MultiProcessor_Init( USART_HandleTypeDef *huart, uint8_t Address, uint32_t WakeUpMethod );
-  virtual HAL_StatusTypeDef HAL_USART_DeInit( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_MspInit( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_MspDeInit( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_Transmit( USART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout );
-  virtual HAL_StatusTypeDef HAL_USART_Receive( USART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout );
-  virtual HAL_StatusTypeDef HAL_USART_Transmit_IT( USART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size );
-  virtual HAL_StatusTypeDef HAL_USART_Receive_IT( USART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size );
-  virtual HAL_StatusTypeDef HAL_USART_Transmit_DMA( USART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size );
-  virtual HAL_StatusTypeDef HAL_USART_Receive_DMA( USART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size );
-  virtual HAL_StatusTypeDef HAL_USART_DMAPause( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_DMAResume( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_DMAStop( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_Abort( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_AbortTransmit( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_AbortReceive( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_Abort_IT( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_AbortTransmit_IT( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_USART_AbortReceive_IT( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_IRQHandler( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_TxCpltCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_TxHalfCpltCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_RxCpltCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_RxHalfCpltCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_ErrorCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_AbortCpltCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_AbortTransmitCpltCallback( USART_HandleTypeDef *huart );
-  virtual void HAL_USART_AbortReceiveCpltCallback( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_LIN_SendBreak( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_MultiProcessor_EnterMuteMode( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_MultiProcessor_ExitMuteMode( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_HalfDuplex_EnableTransmitter( USART_HandleTypeDef *huart );
-  virtual HAL_StatusTypeDef HAL_HalfDuplex_EnableReceiver( USART_HandleTypeDef *huart );
-  virtual HAL_USART_StateTypeDef HAL_USART_GetState( USART_HandleTypeDef *huart );
-  virtual uint32_t HAL_USART_GetError( USART_HandleTypeDef *huart );
+  virtual HAL_StatusTypeDef HAL_USART_Init(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_HalfDuplex_Init(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_LIN_Init(USART_HandleTypeDef* huart, uint32_t BreakDetectLength) = 0;
+  virtual HAL_StatusTypeDef HAL_MultiProcessor_Init(USART_HandleTypeDef* huart, uint8_t Address, uint32_t WakeUpMethod) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_DeInit(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_MspInit(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_MspDeInit(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Transmit(USART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size, uint32_t Timeout) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Receive(USART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size, uint32_t Timeout) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Transmit_IT(USART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Receive_IT(USART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Transmit_DMA(USART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Receive_DMA(USART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_DMAPause(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_DMAResume(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_DMAStop(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Abort(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_AbortTransmit(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_AbortReceive(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_Abort_IT(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_AbortTransmit_IT(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_USART_AbortReceive_IT(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_IRQHandler(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_TxCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_TxHalfCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_RxCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_RxHalfCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_ErrorCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_AbortCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_AbortTransmitCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual void HAL_USART_AbortReceiveCpltCallback(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_LIN_SendBreak(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_MultiProcessor_EnterMuteMode(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_MultiProcessor_ExitMuteMode(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_HalfDuplex_EnableTransmitter(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_StatusTypeDef HAL_HalfDuplex_EnableReceiver(USART_HandleTypeDef* huart) = 0;
+  virtual HAL_USART_StateTypeDef HAL_USART_GetState(USART_HandleTypeDef* huart) = 0;
+  virtual uint32_t HAL_USART_GetError(USART_HandleTypeDef* huart) = 0;
 };
 
 class STM32_HAL_USART_Mock : public STM32_HAL_USART_Interface
@@ -126,7 +126,7 @@ public:
   MOCK_METHOD1( HAL_USART_GetError, uint32_t( USART_HandleTypeDef *huart ) );
 };
 
-extern STM32_HAL_USART_Mock *STM32_HAL_USARTMockObj;
+extern ::testing::NiceMock<STM32_HAL_USART_Mock> *STM32_HAL_USART_MockObj;
 
 #endif /* GMOCK_TEST */
 

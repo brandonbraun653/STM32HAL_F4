@@ -9,8 +9,8 @@
  ********************************************************************************/
 
 #pragma once
-#ifndef mock_stm32_hal_CRC_HPP
-#define mock_stm32_hal_CRC_HPP
+#ifndef MOCK_STM32_HAL_CRC_HPP
+#define MOCK_STM32_HAL_CRC_HPP
 
  /* C++ Includes */
 #include <cstdint>

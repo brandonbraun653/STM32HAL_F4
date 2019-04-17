@@ -109,4 +109,4 @@ extern ::testing::NiceMock<STM32_HAL_SPI_Mock>* STM32_HAL_SPI_MockObj;
 
 #endif /* GMOCK_TEST */
 
-#endif /* !MOCK_STM32_HAL_SPI_HPP */
+#endif /* !mock_stm32_hal_SPI_HPP */
