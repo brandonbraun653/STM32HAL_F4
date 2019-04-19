@@ -32,38 +32,43 @@ extern "C"
 }
 #endif
 
-class STM32_HAL_GPIO_Interface
+namespace STM32HAL_Mock
 {
-public:
-  virtual ~STM32_HAL_GPIO_Interface() = default;
-
-  virtual void HAL_GPIO_Init( GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_Init ) = 0;
-  virtual void HAL_GPIO_DeInit( GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin ) = 0;
-  virtual GPIO_PinState HAL_GPIO_ReadPin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ) = 0;
-  virtual void HAL_GPIO_WritePin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState ) = 0;
-  virtual void HAL_GPIO_TogglePin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ) = 0;
-  virtual HAL_StatusTypeDef HAL_GPIO_LockPin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ) = 0;
-  virtual void HAL_GPIO_EXTI_IRQHandler( uint16_t GPIO_Pin ) = 0;
-  virtual void HAL_GPIO_EXTI_Callback( uint16_t GPIO_Pin ) = 0;
-};
-
-class STM32_HAL_GPIO_Mock : public STM32_HAL_GPIO_Interface
-{
-public:
-  STM32_HAL_GPIO_Mock();
-  virtual ~STM32_HAL_GPIO_Mock() = default;
-
-  MOCK_METHOD2( HAL_GPIO_Init, void( GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_Init ));
-  MOCK_METHOD2( HAL_GPIO_DeInit, void( GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin ));
-  MOCK_METHOD2( HAL_GPIO_ReadPin, GPIO_PinState( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
-  MOCK_METHOD3( HAL_GPIO_WritePin, void( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState ));
-  MOCK_METHOD2( HAL_GPIO_TogglePin, void( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
-  MOCK_METHOD2( HAL_GPIO_LockPin, HAL_StatusTypeDef( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
-  MOCK_METHOD1( HAL_GPIO_EXTI_IRQHandler, void( uint16_t GPIO_Pin ));
-  MOCK_METHOD1( HAL_GPIO_EXTI_Callback, void( uint16_t GPIO_Pin ));
-};
-
-extern ::testing::NiceMock<STM32_HAL_GPIO_Mock> *STM32_HAL_GPIO_MockObj;
+	class GPIOInterface
+	{
+	public:
+	  virtual ~GPIOInterface() = default;
+	
+	  virtual void HAL_GPIO_Init( GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_Init ) = 0;
+	  virtual void HAL_GPIO_DeInit( GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin ) = 0;
+	  virtual GPIO_PinState HAL_GPIO_ReadPin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ) = 0;
+	  virtual void HAL_GPIO_WritePin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState ) = 0;
+	  virtual void HAL_GPIO_TogglePin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ) = 0;
+	  virtual HAL_StatusTypeDef HAL_GPIO_LockPin( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ) = 0;
+	  virtual void HAL_GPIO_EXTI_IRQHandler( uint16_t GPIO_Pin ) = 0;
+	  virtual void HAL_GPIO_EXTI_Callback( uint16_t GPIO_Pin ) = 0;
+	};
+	
+	class GPIOMock : public GPIOInterface
+	{
+	public:
+	  GPIOMock();
+	  virtual ~GPIOMock() = default;
+	
+	  MOCK_METHOD2( HAL_GPIO_Init, void( GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_Init ));
+	  MOCK_METHOD2( HAL_GPIO_DeInit, void( GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin ));
+	  MOCK_METHOD2( HAL_GPIO_ReadPin, GPIO_PinState( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
+	  MOCK_METHOD3( HAL_GPIO_WritePin, void( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState ));
+	  MOCK_METHOD2( HAL_GPIO_TogglePin, void( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
+	  MOCK_METHOD2( HAL_GPIO_LockPin, HAL_StatusTypeDef( GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin ));
+	  MOCK_METHOD1( HAL_GPIO_EXTI_IRQHandler, void( uint16_t GPIO_Pin ));
+	  MOCK_METHOD1( HAL_GPIO_EXTI_Callback, void( uint16_t GPIO_Pin ));
+	};
+	
+  using GPIONiceMock = ::testing::NiceMock<GPIOMock>;
+  using GPIONiceMock_sPtr = std::shared_ptr<GPIONiceMock>;
+	extern GPIONiceMock_sPtr gpioMockObj;
+}
 
 #endif /* GMOCK_TEST */
 
