@@ -67,6 +67,7 @@ namespace STM32HAL_Mock
 	
   using GPIONiceMock = ::testing::NiceMock<GPIOMock>;
   using GPIONiceMock_sPtr = std::shared_ptr<GPIONiceMock>;
+
 	extern GPIONiceMock_sPtr gpioMockObj;
 }
 
