@@ -1,11 +1,17 @@
-import feature ;
+import lib/CommonTools/boost-build/features/thor ;
 
-rule explicit_alias ( name : sources * : requirements * : default-build * : usage-requirements * )
+# ====================================================
+# Local Rules 
+# ====================================================
+local rule explicit_alias ( name : sources * : requirements * : default-build * : usage-requirements * )
     {
     alias $(name) : $(sources) : $(requirements) : $(default-build) : $(usage-requirements) ;
     explicit $(name) ;
     }
 
+# ====================================================
+# Local Resources 
+# ====================================================
 # ------------------------------------------
 # Build Target Specific Options 
 # ------------------------------------------
@@ -82,7 +88,7 @@ local f4_hal_inc_dir = STM32F4xx_HAL_Driver/Inc ;
 local f4_dev_inc_dir = Device/include ;
 local f4_dev_sys_dir = Device/sys ;
 local f4_cfg_inc_dir = Device/conf ;
-local cmsis_inc_dir = ../cmsis/CMSIS/Core/Include ;
+local cmsis_inc_dir = Device/cmsis/core/include ;
 
 local f4_include_dirs = 
     $(f4_hal_inc_dir)
@@ -99,53 +105,59 @@ local f4_common_src = $(f4_dev_system_src_dir)/system_stm32f4xx.c ;
 local f4_ll_src = [ glob $(f4_hal_driver_src_dir)/stm32f4xx_ll*.c ] ;
 local f4_hal_src = [ glob $(f4_hal_driver_src_dir)/stm32f4xx_hal*.c ] ;
 
-# ------------------------------------------
+# ====================================================
+# Project Definition
+# ====================================================
+project STM32F4_HAL_DRIVER : usage-requirements <include>$(f4_include_dirs) ;
+
+# ====================================================
 # Device Specific Libs: 
 #   Figures out what device we are actually compiling for. By default
 #   propagates MCU specific defines/cflags/linkflags in the usage-requirements 
 #   field. This is how so many chip variants are supported without much effort.
-# ------------------------------------------
-# If this is hit, you need to define <ThorChip> for one of the project requirements.
-lib F4_TARGET_MCU : ThorMCU_feature_not_defined.c : <ThorChip>STM32F4xx ;
+# ====================================================
 
+# ------------------------------------------
+# STM32F446RE
+# ------------------------------------------
 alias F4_TARGET_MCU : 
-    :   <ThorChip>STM32F446
-        <ThorVariant>RE
+    :   <Thor>enabled-F446
+        <Thor>enabled-RE
     :
     # Expect all these to be propagated to all projects
-    :   <define>STM32F446xx
-        <define>CHIMERA_LITTLE_ENDIAN
-        <linkflags>-mfpu=fpv4-sp-d16
-        <linkflags>$(generic_f4_usage_requirements_link_flags)
-        <linkflags>-T$(linker_dir)/STM32F446RE_flash.lds
-        <cflags>$(generic_f4_usage_requirements_cflags)
-        <cflags>-mfpu=fpv4-sp-d16 
-        <cxxflags>$(generic_f4_usage_requirements_cflags)
+    :   <define>STM32F446xx                     
+        <define>CHIMERA_LITTLE_ENDIAN                               # We are a little endian device
+        <linkflags>-mfpu=fpv4-sp-d16                                # Use hardware FPU
+        <linkflags>$(generic_f4_usage_requirements_link_flags)      
+        <linkflags>-T$(linker_dir)/STM32F446RE_flash.lds            # Linker script
+        <cflags>$(generic_f4_usage_requirements_cflags)             
+        <cflags>-mfpu=fpv4-sp-d16                                  
+        <cxxflags>$(generic_f4_usage_requirements_cflags)           
         <cxxflags>-mfpu=fpv4-sp-d16
     ;
 
 lib F4_TARGET_SRC 
     :   $(f4_dev_startup_src_dir)/startup_stm32f446xx.c
     
-    :   <ThorChip>STM32F446
+    :   <Thor>enabled-F446
         <link>static
         <define>DEBUG_DEFAULT_INTERRUPT_HANDLERS
         <use>F4_TARGET_MCU 
     ;
 
+# ------------------------------------------
+# Add more here
+# ------------------------------------------
+
 explicit F4_TARGET_SRC ;
 explicit F4_TARGET_MCU ;
 
+# ====================================================
+# STM32 HAL Low Level Driver 
+# ====================================================
 # ------------------------------------------
-# Common Project Properties
+# Debug Variant
 # ------------------------------------------
-project STM32F4_HAL_DRIVER : usage-requirements <include>$(f4_include_dirs) ;
-
-# ------------------------------------------
-# STM32F4_HAL Low Level Driver Lib Targets
-# ------------------------------------------
-lib LL_DRIVER : invld_stm32f4_ll_cfg.c ;
-
 lib LL_DRIVER 
     :   $(f4_ll_src)
         $(f4_common_src)
@@ -164,6 +176,9 @@ lib LL_DRIVER
         <use>F4_TARGET_MCU
     ;
 
+# ------------------------------------------
+# Release Variant
+# ------------------------------------------
 lib LL_DRIVER 
     :   $(f4_ll_src) 
         $(f4_common_src)
@@ -184,11 +199,12 @@ lib LL_DRIVER
 
 explicit LL_DRIVER ;
 
+# ====================================================
+# STM32 HAL Standard Driver 
+# ====================================================
 # ------------------------------------------
-# STM32F4_HAL Driver Lib Targets
+# Debug Variant
 # ------------------------------------------
-lib HAL_DRIVER : invld_stm32f4_hal_cfg.c ;
-
 lib HAL_DRIVER 
     :   $(f4_hal_src)  
         $(f4_common_src)
@@ -205,6 +221,9 @@ lib HAL_DRIVER
     :   <use>F4_TARGET_MCU
     ;
 
+# ------------------------------------------
+# Release Variant
+# ------------------------------------------
 lib HAL_DRIVER
     :   $(f4_hal_src) 
         $(f4_common_src)
@@ -223,12 +242,14 @@ lib HAL_DRIVER
 
 explicit HAL_DRIVER ;
 
-# ------------------------------------------
-# STM32F4xx Library Components:
-#   These are intented to be consumed by the user
-# ------------------------------------------
+# ====================================================
+# Public Components 
+# ====================================================
 explicit_alias PUB : : : : <include>$(f4_include_dirs) ;
 
+# ====================================================
+# Aliases to build from command line
+# ====================================================
 explicit_alias F4_HAL : HAL_DRIVER : : : <use>PUB ;
 explicit_alias F4_LL : LL_DRIVER : : : <use>PUB ;
 explicit_alias F4_LIB : F4_HAL F4_LL : : : <use>PUB ;
