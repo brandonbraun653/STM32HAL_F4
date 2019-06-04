@@ -84,19 +84,7 @@ local f4_hal_driver_src_dir = stm32f4/STM32F4xx_HAL_Driver/Src ;
 local f4_dev_system_src_dir = stm32f4/Device/sys ;
 local f4_dev_startup_src_dir = stm32f4/Device/startup ;
 
-local f4_hal_inc_dir = stm32f4/STM32F4xx_HAL_Driver/Inc ;
-local f4_dev_inc_dir = stm32f4/Device/include ;
-local f4_dev_sys_dir = stm32f4/Device/sys ;
-local f4_cfg_inc_dir = stm32f4/Device/conf ;
-local cmsis_inc_dir = stm32f4/Device/cmsis/core/include ;
-
-local f4_include_dirs = 
-    $(f4_hal_inc_dir)
-    $(f4_dev_inc_dir)
-    $(f4_dev_sys_dir)
-    $(f4_cfg_inc_dir)
-    $(cmsis_inc_dir)
-    ;
+local f4_include_dir = . ;
 
 # ------------------------------------------
 # Source Files
@@ -120,7 +108,8 @@ project STM32F4_HAL_DRIVER : usage-requirements <include>$(f4_include_dirs) ;
 # ------------------------------------------
 # STM32F446RE
 # ------------------------------------------
-alias F4_TARGET_MCU : 
+alias ALIAS_MCU_OPTIONS 
+    : 
     :   <Thor>enabled-F446
         <Thor>enabled-RE
     :
@@ -136,21 +125,21 @@ alias F4_TARGET_MCU :
         <cxxflags>-mfpu=fpv4-sp-d16
     ;
 
-lib F4_TARGET_SRC 
+lib LIB_TARGET_STARTUP 
     :   $(f4_dev_startup_src_dir)/startup_stm32f446xx.c
     
     :   <Thor>enabled-F446
         <link>static
         <define>DEBUG_DEFAULT_INTERRUPT_HANDLERS
-        <use>F4_TARGET_MCU 
+        <use>ALIAS_MCU_OPTIONS 
     ;
 
 # ------------------------------------------
 # Add more here
 # ------------------------------------------
 
-explicit F4_TARGET_SRC ;
-explicit F4_TARGET_MCU ;
+explicit LIB_TARGET_STARTUP ;
+explicit ALIAS_MCU_OPTIONS ;
 
 # ====================================================
 # STM32 HAL Low Level Driver 
@@ -161,19 +150,19 @@ explicit F4_TARGET_MCU ;
 lib LL_DRIVER 
     :   $(f4_ll_src)
         $(f4_common_src)
-        F4_TARGET_SRC
+        LIB_TARGET_STARTUP
 
     :   <variant>debug
         <link>static
-        <include>$(f4_include_dirs)
+        <include>$(f4_include_dir)
         <define>$(f4_dbg_defs)
         <define>USE_FULL_LL_DRIVER
         <cflags>$(f4_dbg_cflags)
         <cflags>$(all_generic_f4_cflags)
-        <use>F4_TARGET_MCU
-    :   
-    :   <define>USE_FULL_LL_DRIVER
-        <use>F4_TARGET_MCU
+        <use>ALIAS_MCU_OPTIONS
+    :
+    :   <use>ALIAS_MCU_OPTIONS              # Non-lib chip specific compiler/linker options
+        <define>USE_FULL_LL_DRIVER
     ;
 
 # ------------------------------------------
@@ -182,19 +171,19 @@ lib LL_DRIVER
 lib LL_DRIVER 
     :   $(f4_ll_src) 
         $(f4_common_src)
-        F4_TARGET_SRC
+        LIB_TARGET_STARTUP
 
     :   <variant>release
         <link>static
-        <include>$(f4_include_dirs)
+        <include>$(f4_include_dir)
         <define>$(f4_rel_defs)
         <define>USE_FULL_LL_DRIVER
         <cflags>$(f4_rel_cflags)
         <cflags>$(all_generic_f4_cflags)
-        <use>F4_TARGET_MCU
-    :   
-    :   <define>USE_FULL_LL_DRIVER
-        <use>F4_TARGET_MCU
+        <use>ALIAS_MCU_OPTIONS
+    :
+    :   <use>ALIAS_MCU_OPTIONS              # Non-lib chip specific compiler/linker options
+        <define>USE_FULL_LL_DRIVER
     ;
 
 explicit LL_DRIVER ;
@@ -208,17 +197,17 @@ explicit LL_DRIVER ;
 lib HAL_DRIVER 
     :   $(f4_hal_src)  
         $(f4_common_src)
-        F4_TARGET_SRC
+        LIB_TARGET_STARTUP
 
     :   <variant>debug
         <link>static
-        <include>$(f4_include_dirs)
+        <include>$(f4_include_dir)
         <define>$(f4_dbg_defs)
         <cflags>$(f4_dbg_cflags)
         <cflags>$(all_generic_f4_cflags)
-        <use>F4_TARGET_MCU
-    :   
-    :   <use>F4_TARGET_MCU
+        <use>ALIAS_MCU_OPTIONS
+    :
+    :   <use>ALIAS_MCU_OPTIONS              # Non-lib chip specific compiler/linker options
     ;
 
 # ------------------------------------------
@@ -227,17 +216,17 @@ lib HAL_DRIVER
 lib HAL_DRIVER
     :   $(f4_hal_src) 
         $(f4_common_src)
-        F4_TARGET_SRC
+        LIB_TARGET_STARTUP
 
     :   <variant>release
         <link>static
-        <include>$(f4_include_dirs)
+        <include>$(f4_include_dir)
         <define>$(f4_rel_defs)
         <cflags>$(f4_rel_cflags)
         <cflags>$(all_generic_f4_cflags)
-        <use>F4_TARGET_MCU
-    :   
-    :   <use>F4_TARGET_MCU
+        <use>ALIAS_MCU_OPTIONS
+    :
+    :   <use>ALIAS_MCU_OPTIONS              # Non-lib chip specific compiler/linker options
     ;
 
 explicit HAL_DRIVER ;
@@ -245,11 +234,11 @@ explicit HAL_DRIVER ;
 # ====================================================
 # Public Components 
 # ====================================================
-explicit_alias PUB : : : : <include>$(f4_include_dirs) ;
+explicit_alias PUB : : : : <include>$(f4_include_dir) ;
 
 # ====================================================
 # Aliases to build from command line
 # ====================================================
-explicit_alias F4_HAL : HAL_DRIVER : : : <use>PUB ;
-explicit_alias F4_LL : LL_DRIVER : : : <use>PUB ;
-explicit_alias F4_LIB : F4_HAL F4_LL : : : <use>PUB ;
+explicit_alias F4_HAL : HAL_DRIVER  ;
+explicit_alias F4_LL : LL_DRIVER ;
+explicit_alias F4_LIB : HAL_DRIVER LL_DRIVER ;
